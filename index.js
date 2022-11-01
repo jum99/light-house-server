@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('Light House !')
 })
 
 
@@ -114,7 +114,7 @@ client.connect(err => {
 
     // Email by user order get api
 
-    app.post('/orders', (req, res) => {
+    app.get('/orders', (req, res) => {
         const date = req.body;
         const email = req.body.email;
         adminCollection.find({ email: email })
@@ -132,6 +132,8 @@ client.connect(err => {
     })
 
 
+
+
     // admin and user email check
     app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
@@ -141,7 +143,7 @@ client.connect(err => {
             })
     })
 
-    // delate product api
+    // delete product api
     app.delete('/deleteItem/:id', (req, res) => {
         const id = ObjectId(req.params.id);
         console.log('delete this ', id);
@@ -149,7 +151,7 @@ client.connect(err => {
             .then(documents => res.send(!!documents.value))
     })
 
-    // delate product api
+    // delete order api
     app.delete('/cancelItem/:id', (req, res) => {
         const id = ObjectId(req.params.id);
         console.log('delete this ', id);
