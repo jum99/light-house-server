@@ -3,11 +3,9 @@ const bodyParser = require('body-parser');
 const { MongoClient, ObjectId } = require('mongodb');
 const cors = require('cors');
 
-
 require('dotenv').config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fodu2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,11 +18,8 @@ app.get('/', (req, res) => {
     res.send('Light House !')
 })
 
-
-
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 client.connect(err => {
     const database = client.db('LightHouse');
@@ -115,24 +110,17 @@ client.connect(err => {
     // Email by user order get api
 
     app.get('/orders', (req, res) => {
-        const date = req.body;
-        const email = req.body.email;
-        adminCollection.find({ email: email })
-            .toArray((err, admin) => {
-                const filter = { date: date.date }
-                if (admin.length === 0) {
-                    filter.email = email;
-                }
-                orderCollection.find(filter)
-                    .toArray((err, documents) => {
+        let query = {};
+        const displayName = req.query.displayName;
+        if (displayName) {
+            query = { displayName: displayName };
+        }
+        orderCollection.find(query)
+            .toArray((err, documents) => {
+                res.send(documents)
+            });
 
-                        res.send(documents);
-                    })
-            })
     })
-
-
-
 
     // admin and user email check
     app.post('/isAdmin', (req, res) => {
@@ -159,12 +147,9 @@ client.connect(err => {
             .then(documents => res.send(!!documents.value))
     })
 
-
     console.log('database connected');
 
 });
-
-
 
 
 app.listen(port, () => {
